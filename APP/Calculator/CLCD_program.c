@@ -174,7 +174,7 @@ void CLCD_voidSendNumber(sint32 Copy_s32Number)
 
 /************************ Go to x and y Simple *****************/
 
-void voidGotoXandY(uint8 Copy_u8Row,uint8 Copy_u8Col)
+void CLCD_voidGoToXY(uint8 Copy_u8Row,uint8 Copy_u8Col)
 {
 
 	uint8 Local_Address;
