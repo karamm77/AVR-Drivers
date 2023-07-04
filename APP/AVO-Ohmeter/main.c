@@ -13,6 +13,9 @@ void main(void)
 {
 	uint16 Local_u8DigitalVal = 0;
 	uint16 Local_u8DigitalValMV = 0;
+
+	uint16 Local_u8FinalVolRead = 0;
+	uint16 Local_u8FinalResRead = 0;
 	uint16 Resistance = 0;
 	uint8 Read = 0xFF;
 /*******************************************/
@@ -60,9 +63,11 @@ void main(void)
 
 				Local_u8DigitalVal = ADC_uint16GetDigitalValue(ADC_uint8_CHANNEL_0);
 				Local_u8DigitalValMV = (Local_u8DigitalVal * 5000UL) / 1023;
-				_delay_ms(1500);
+				Local_u8FinalVolRead = Local_u8DigitalValMV / 1000UL;
+				_delay_ms(500);
 
-				CLCD_voidSendNumber(Local_u8DigitalValMV);
+				CLCD_voidSendNumber(Local_u8FinalVolRead);
+				CLCD_u8SendString("V");
 			}
 			break;
 
@@ -77,9 +82,11 @@ void main(void)
 				Local_u8DigitalVal = ADC_uint16GetDigitalValue(ADC_uint8_CHANNEL_0);
 				Local_u8DigitalValMV = (Local_u8DigitalVal * 5000UL) / 1023;
 				Resistance = Local_u8DigitalValMV / 40;
+				Local_u8FinalResRead = Resistance / 1000UL;
 				_delay_ms(1500);
 
 				CLCD_voidSendNumber(Resistance);
+				CLCD_u8SendString("OHM");
 			}
 			break;
 
