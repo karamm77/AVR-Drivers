@@ -13,6 +13,7 @@ typedef struct
 {
 
 	uint16 periodicity;
+	uint16 FirstDelay;
 	void(*TaskFunc)(void);
 	uint8 Suspendded;
 
