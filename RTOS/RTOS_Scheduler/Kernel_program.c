@@ -17,7 +17,7 @@ void RTOS_voidStart(void)
 
 }
 
-uint8 RTOS_u8CreateTask(uint8 Copy_u8Priority,uint16 Copy_u16Periodicity, void(*Copy_pvTaskFunc)(void))
+uint8 RTOS_u8CreateTask(uint8 Copy_u8Priority,uint16 Copy_u16Periodicity,uint16 Copy_u16FirstDelay, void(*Copy_pvTaskFunc)(void))
 {
 
 	uint8 Local_u8ErrorState = OK;
@@ -28,6 +28,8 @@ uint8 RTOS_u8CreateTask(uint8 Copy_u8Priority,uint16 Copy_u16Periodicity, void(*
 		{
 		SystemTasks[Copy_u8Priority].periodicity = Copy_u16Periodicity;
 		SystemTasks[Copy_u8Priority].TaskFunc = Copy_pvTaskFunc;
+		SystemTasks[Copy_u8Priority].Suspendded = 0u;
+		SystemTasks[Copy_u8Priority].FirstDelay = Copy_u16FirstDelay;
 		}
 		else
 		{
@@ -51,21 +53,23 @@ static void Scheduler(void)
 {
 	uint8 Local_u8TaskCounter;
 
-	static uint16 Local_u8TickCounter = 0;
-	Local_u8TickCounter++;
+
 
 	for(Local_u8TaskCounter = 0; Local_u8TaskCounter <Task_Num; Local_u8TaskCounter++)
 	{
 		if(SystemTasks[Local_u8TaskCounter].TaskFunc != NULL)
 		{
-			if((Local_u8TickCounter % SystemTasks[Local_u8TaskCounter].periodicity == 0) && (SystemTasks[Local_u8TaskCounter].Suspendded==0u))
+			if(SystemTasks[Local_u8TaskCounter].FirstDelay == 0)
 			{
 				/** Invoke the task function **/
 				SystemTasks[Local_u8TaskCounter].TaskFunc();
+				SystemTasks[Local_u8TaskCounter].FirstDelay = SystemTasks[Local_u8TaskCounter].periodicity-1 ;
+
 			}
 			else
 			{
-				/*	Do Nothing, Suspended or condition didn't meet	*/
+				/** Assign First Delay to periodicity **/
+				SystemTasks[Local_u8TaskCounter].FirstDelay--;
 			}
 		}
 		else

@@ -24,9 +24,9 @@ void main(void)
 
 
 
-	RTOS_u8CreateTask(0, 1000,&Led1);
-	RTOS_u8CreateTask(1, 2000,&Led2);
-
+	RTOS_u8CreateTask(0, 1000, 0, &Led1);
+	RTOS_u8CreateTask(1, 1000, 500, &Led2);
+	RTOS_voidSuspendTask(1);
 
 
 	RTOS_voidStart();
@@ -46,8 +46,9 @@ void main(void)
 void Led1(void)
 {
 	DIO_u8TogglePinValue(DIO_u8PORTA, DIO_u8PIN0);
-	//RTOS_voidDeleteTask(1);
-	RTOS_u8CreateTask(1, 2000, &Led3); /* overwriting priority after deleting	*/
+
+	RTOS_u8CreateTask(2, 1000, 1000, &Led3);
+ /* overwriting priority after deleting	*/
 
 
 }
@@ -60,7 +61,10 @@ void Led2(void)
 
 void Led3(void)
 {
+	RTOS_voidResumeTask(1);
 	DIO_u8TogglePinValue(DIO_u8PORTA, DIO_u8PIN2);
+
+
 
 }
 
